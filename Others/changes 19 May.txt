@@ -1,0 +1,36 @@
+seLoginUI:
+Added moderator validation
+
+seModeratorHomeUI:
+public moderatorHomeController (moderator m)
+{
+    this.m = m;
+    modHome = new seModeratorHomeUI();
+    modHome.setVisible(true);
+    displayModeratorInfo();
+}
+	
+private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    this.setVisible(false);
+    modGenController modReport = new modGenController(m); //changed
+    
+} 
+
+Minor change to these two by being able to view comment when the row is clicked:
+seViewQuestion
+seViewAnswerUI
+
+Also changed the UI for seViewAnswerUI, as I added another textarea because I felt that full answer to the question needs to be shown somewhere.
+Will need to change wireframe for seViewAnswerUI.
+
+All other changes affected by removal of noOfVote column
+
+seModGenUI (in controller class);
+private moderator retrieveInfo, m;
+private seModGenUI modReport;
+modGenController(moderator m)
+{
+    this.m = m;
+    modReport = new seModGenUI();
+    modReport.setVisible(true);
+}

@@ -1,0 +1,24 @@
+Record started:
+1. Now showing registration
+2. Now login as admin and approve the user who registered
+3. Now as an admin, edit that student's data
+4. Now testing banning of student
+5. Now testing a banned student being unable to login with a default banned student account
+6. Now login as an active student
+7. Student edits own profile
+8. Now exploring the subjects with questions
+9. can vote on the question/ans/comments
+10. create new question!
+11 Can comment and answer the question!
+12 can view the answer if they are too long! (only answer sorry)
+13. can comment on the answer!
+14. same functionalities for science!
+15. Now going into moderator!
+16. Moderator edit their own profile!
+17. Now exploring generating reports!
+18. 4 students with same participation ratings at the top!
+19. Most interesting question based on number of answers to it (7), if there are same number of answers on other questions, will display more than one question!
+20. Top question of this month! With 3 votes to it
+21. There are no top questions of the week...but we can add it in! By voting!
+22. Find questions created just now which is today!
+23. Increase the vote to 2! (Below month top which is 3)

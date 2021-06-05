@@ -1,0 +1,234 @@
+changes:
+In StudentEditProfileController:
+//)pw, fullName, email, phone)
+public static void updateProfile(student s, String ... stmts)
+{
+    String st = "UPDATE studentid.sinfoafter SET ";
+    String newVal = new String();
+    for(int i = 0; i < stmts.length; i++)
+    {
+        if(!stmts[i].isEmpty())
+        {
+            newVal = stmts[i];
+            s.setPassword(i==0?newVal.substring(11):s.getPassword());
+            s.setFullName(i==1?newVal.substring(11):s.getFullName());
+            s.setEmail(i==2?newVal.substring(8):s.getEmail());
+            s.setPhone(i==3?Integer.parseInt(newVal.substring(8)):s.getPhone());
+            st += stmts[i] + "'";
+            if(i != stmts.length-1 && !stmts[i+1].isEmpty())
+                st += ", ";
+        }
+    }
+    
+    st += "WHERE username='" + s.getUsername() +"'";
+    System.out.println("SQL statement " + st);
+    
+    student.updateAccount(st);
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+In userMain:
+In admin:
+- pendingList
+public ArrayList <student> pendingList ()
+{
+    sInfoGrp = new ArrayList <student> ();
+    try
+    {
+        Class.forName ("com.mysql.cj.jdbc.Driver");
+        //conn = DriverManager.getConnection("jdbc:mysql://localhost:3310/mysql?useTimezone=true&serverTimezone=UTC", "root", "root");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql?useTimezone=true&serverTimezone=UTC", "root", "qwe123");
+        st = conn.createStatement ();
+        rs = st.executeQuery ("SELECT * FROM studentid.sinfobefore");
+        while (rs.next ())
+        {
+            //sInfoIndi = new student (rs.getString ("username"), rs.getString ("password"), rs.getInt ("snumber"), rs.getString ("fullname"), rs.getString ("email"), rs.getInt ("phone")); 
+            sInfoIndi = new student (rs.getString ("username"), rs.getString ("password"), rs.getInt ("snumber"), rs.getString ("fullname"), rs.getString ("email"), rs.getInt ("phone"), rs.getInt("participationRating"), 
+                                     rs.getInt ("status"), rs.getInt("noOfQns"), rs.getInt("noOfAns"), rs.getInt("noOfCmt"), rs.getInt("noOfVote")); 
+            sInfoGrp.add (sInfoIndi);
+        }
+        conn.close ();
+    }
+    catch (Exception e)
+    {
+        System.out.print (e);
+    }
+    return sInfoGrp;
+}
+
+- currentList
+// instantiate studentInfoAfter list and store a list of students to be displayed in current usersList in seAdminHomeUI
+// also used to match current users to display when selected
+public ArrayList <student> currentList ()
+{
+    sInfoGrp = new ArrayList <student> ();
+    try
+    {
+        Class.forName ("com.mysql.cj.jdbc.Driver");
+        //conn = DriverManager.getConnection("jdbc:mysql://localhost:3310/mysql?useTimezone=true&serverTimezone=UTC", "root", "root");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql?useTimezone=true&serverTimezone=UTC", "root", "qwe123");
+        st = conn.createStatement ();
+        rs = st.executeQuery ("SELECT * FROM studentid.sinfoafter");
+        while (rs.next ())
+        {
+            //(String username, String password, int studentID, String fullname, String email, int phone, int participationRating, // changes made here
+            //int status, int noOfQns, int noOfAns, int noOfComment, int noOfVote)
+            sInfoIndi = new student (rs.getString ("username"), rs.getString ("password"), rs.getInt ("snumber"), rs.getString ("fullname"), rs.getString ("email"), rs.getInt ("phone"), rs.getInt("participationRating"), 
+                                     rs.getInt ("status"), rs.getInt("noOfQns"), rs.getInt("noOfAns"), rs.getInt("noOfCmt"), rs.getInt("noOfVote")); 
+            sInfoGrp.add (sInfoIndi);
+        }
+        conn.close ();
+    }
+    catch (Exception e)
+    {
+        System.out.print (e);
+    }
+    return sInfoGrp;
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In student:
+- setSession
+public student setSession(String username, String password)
+{
+   int studentID = 0;
+   String fullname = "", email = "";
+   int phone = 0, status = 0;
+   int noOfQns = 0, noOfAns = 0, noOfCmt = 0, noOfVote = 0, pRating = 0;
+   
+    try
+    {
+        Class.forName ("com.mysql.cj.jdbc.Driver");
+        //Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3310/mysql?useTimezone=true&serverTimezone=UTC", "root", "root");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql?useTimezone=true&serverTimezone=UTC", "root", "qwe123");
+        Statement st = conn.createStatement ();
+        ResultSet rs = st.executeQuery ("SELECT * FROM studentid.sinfoafter where username='" + username +"' and password='" + password + "'");
+        while (rs.next ())
+        {
+            studentID = rs.getInt("snumber");
+            fullname = rs.getString("fullname");
+            email = rs.getString("email");
+            phone = rs.getInt("phone");
+            status = rs.getInt("status");
+            noOfQns = rs.getInt("noOfQns");
+            noOfAns = rs.getInt("noOfAns");
+            noOfCmt = rs.getInt("noOfCmt");
+            noOfVote = rs.getInt("noOfVote");
+            pRating = rs.getInt("participationRating");
+        }
+        conn.close ();
+    }
+    catch (Exception e)
+    {
+        System.out.print (e);
+    }
+    //(String username, String password, int studentID, String fullname, String email, int phone, int participationRating, // changes made here
+    //int status, int noOfQns, int noOfAns, int noOfComment, int noOfVote)
+    return new student(username, password, studentID, fullname, email, phone, pRating, status, noOfQns, noOfAns, noOfCmt, noOfVote);
+}
+
+Removed
+    //overload
+//    public student (String username, String password, int studentID, String fullname, String email, int phone,
+//                    int noOfQns, int noOfAns, int noOfComment, int noOfVote, int participationRating)
+//    {
+//        super (username, password, fullname, email, phone);
+//        this.studentID = studentID;
+//        this.noOfQns = noOfQns;
+//        this.noOfAns = noOfAns;
+//        this.noOfComment = noOfComment;
+//        this.noOfVote = noOfVote;
+//        this.participationRating = participationRating;
+//    }
+    
+//    public student (String username, String password, int studentID, String fullname, String email, int phone, int status)
+//    {
+//        super (username, password, fullname, email, phone);
+//        this.studentID = studentID;
+//        this.status = status;
+//    }
+    
+//    //overload
+//    public student (String username, int studentID, String fullname, String email, int phone,
+//                    int noOfQns, int noOfAns, int noOfComment, int noOfVote, int participationRating)
+//    {
+//        this.username = username;
+//        this.studentID = studentID;
+//        this.fullname = fullname;
+//        this.email = email;
+//        this.phone = phone;
+//        this.noOfQns = noOfQns;
+//        this.noOfAns = noOfAns;
+//        this.noOfComment = noOfComment;
+//        this.noOfVote = noOfVote;
+//        this.participationRating = participationRating;
+//    }
+    
+//    public student(student s)
+//    {
+//        super(s.getUsername(), s.getPassword(), s.getFullName(), s.getEmail(), s.getPhone());
+//        this.studentID  = s.getsId();
+//        this.noOfQns = s.getNoOfQns();
+//        this.noOfAns = s.getNoOfAns();
+//        this.noOfComment = s.getNoOfCmt();
+//        this.noOfVote = s.getNoOfVote();
+//        this.participationRating = s.getPartRating();
+//    }
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In questions:
+public int getNoOfDays()
+{
+    int noOfDays = 0;
+    try
+    {
+        Class.forName("com.mysql.cj.jdbc.Driver"); //can change if using different one
+        con=DriverManager.getConnection(  
+        "jdbc:mysql://localhost:3310/mysql?useTimezone=true&serverTimezone=UTC","root","root"); //host number can be changed
+//       con=DriverManager.getConnection(  
+//      "jdbc:mysql://localhost:3306/mysql?useTimezone=true&serverTimezone=UTC","root","qwe123");
+        Statement stmt=con.createStatement();  
+        ResultSet rs = stmt.executeQuery("select datediff(sysdate(), timestamp) from studentid.questions where subId='" + subId + "'");
+        while(rs.next())
+        {
+            noOfDays = rs.getInt(1);
+        }
+        con.close();  
+    }
+    catch(Exception e)
+    {
+        System.out.println(e);
+    }
+    return noOfDays;
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In answers:
+public int getNoOfDays()
+{
+    int noOfDays = 0;
+    try
+    {
+        Class.forName("com.mysql.cj.jdbc.Driver"); //can change if using different one
+        con=DriverManager.getConnection(  
+        "jdbc:mysql://localhost:3310/mysql?useTimezone=true&serverTimezone=UTC","root","root"); //host number can be changed
+//        con=DriverManager.getConnection(  
+//        "jdbc:mysql://localhost:3306/mysql?useTimezone=true&serverTimezone=UTC","root","qwe123");
+        Statement stmt=con.createStatement();  
+        ResultSet rs = stmt.executeQuery("select datediff(sysdate(), timestamp) from studentid.answers where aId='" + getAnswerId() + "'");
+        while(rs.next())
+        {
+            noOfDays = rs.getInt(1);
+        }
+        con.close();  
+    }
+    catch(Exception e)
+    {
+        System.out.println(e);
+    }
+    return noOfDays;
+}
